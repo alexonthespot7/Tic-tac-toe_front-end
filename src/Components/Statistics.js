@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
-import { XYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, VerticalBarSeries, VerticalBarSeriesCanvas, LabelSeries } from 'react-vis';
 import Cookies from 'js-cookie';
 import Axios from 'axios';
 
 import AuthContext from '../contexts/AuthContext';
 import { Typography, Stack } from '@mui/material';
+
+import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
+
 
 function Statistics() {
   const [flagHere, setFlagHere] = useState(false);
@@ -25,16 +27,16 @@ function Statistics() {
         };
         setStatsOne([
           {
-            x: 'Crosses Wins',
-            y: statData[0]
+            'name': 'Crosses Wins',
+            'value': statData[0]
           },
           {
-            x: 'Noughts Wins',
-            y: statData[1]
+            'name': 'Noughts Wins',
+            'value': statData[1]
           },
           {
-            x: 'Draws',
-            y: statData[2]
+            'name': 'Draws',
+            'value': statData[2]
           }
         ]);
       } else {
@@ -58,17 +60,26 @@ function Statistics() {
   }, []);
 
   if (flagHere && Cookies.get('authorized')) {
-    return !isEmpt ? (
-      <div className='Applogo'>
-        <Stack spacing={2} sx={{my: 10}}>
+    return (!isEmpt && statsOne) ? (
+      <div className='App'>
+        <Stack spacing={4} sx={{my: 8}}>
           <Typography variant='h5'>Your statistics</Typography>
-          <XYPlot xType="ordinal" width={400} height={400} xDistance={100}>
-            <VerticalGridLines />
-            <HorizontalGridLines />
-            <XAxis />
+          <BarChart
+            width={600}
+            height={400}
+            data={statsOne}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <XAxis dataKey="name" />
             <YAxis />
-            <VerticalBarSeries data={statsOne} />
-          </XYPlot>
+            <Tooltip />
+            <Bar dataKey="value" fill="#8884d8" />
+          </BarChart>
         </Stack>
       </div>
     ) : (

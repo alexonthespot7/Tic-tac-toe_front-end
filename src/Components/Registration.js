@@ -12,7 +12,7 @@ function Registration() {
     login: '',
     password: ''
   });
-  const { authorized, setAuthorized, login, setLogin, statsOne, setStatsOne } = useContext(AuthContext);
+  const { authorized, setAuthorized, setLogin } = useContext(AuthContext);
 
   const inputChanged = (event) => {
     setUser({...user, [event.target.name]: event.target.value});
@@ -28,8 +28,8 @@ function Registration() {
           alert("Everything went succesfully");
           setAuthorized(true);
           setLogin(user.login)
-          Cookies.set('authorized', authorized);
-          Cookies.set('login', login);
+          Cookies.set('authorized', true);
+          Cookies.set('login', user.login);
       } else {
           alert("The login is already in use");
       };
