@@ -3,11 +3,24 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
 
-ReactDOM.rende (
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+import AuthProvider from './Components/AuthProvider';
+
+function Main() {
+  return (
+    <React.StrictMode>
+      <AuthProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthProvider>
+    </React.StrictMode>
+  )
+}
+
+ReactDOM.render(
+  <Main />,
   document.getElementById('root')
 );
 
