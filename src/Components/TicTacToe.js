@@ -1101,7 +1101,6 @@ export default function TicTacToe() {
         
         if (countEmpts(flag) == 8) {
           res = doFirstN(init);
-          alert(res);
         } else if (countEmpts(flag) == 6) {
           res = doSecondN(init);
         } else if (countEmpts(flag) == 4) {
@@ -1168,7 +1167,6 @@ export default function TicTacToe() {
         
         if (countEmpts(flag) == 8) {
           res = doFirstN(init);
-          alert(res);
         } else if (countEmpts(flag) == 6) {
           res = doSecondN(init);
         } else if (countEmpts(flag) == 4) {
