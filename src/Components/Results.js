@@ -3,11 +3,11 @@ import { useContext } from "react";
 import AuthContext from "../contexts/AuthContext";
 
 export default function Results() {
-    const { winner, draw, setDraw, turn, flag } = useContext(AuthContext);
+    const { winner, draw, setDraw, turn, flag, playWFriend } = useContext(AuthContext);
     
     if (winner !== '') {
       return (
-        <Typography align='center' variant='h5'>Congratulations! {winner} won!</Typography>
+        <Typography align='center' variant='h5'>Game Over! {winner} won!</Typography>
       );
     } else {
       let check = true;
@@ -26,7 +26,10 @@ export default function Results() {
         );
       } else {
         return (
-          <Typography align='center' variant='h6'>{turn}, please make your turn...</Typography>
+          <div>
+            {!playWFriend && <Typography color="#000" align='left' variant='h6'>You are playing for {turn}!</Typography>}
+            {playWFriend && <Typography color="#000" align='left' variant='h6'>{turn}, please make your turn...</Typography>}
+          </div>
         );
       }
     }

@@ -12,6 +12,11 @@ function AuthProvider(props) {
   const [flag, setFlag] = useState(['', '', '', '', '', '', '', '', '']);
   const [cellColor, setColor] = useState(['#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb']);
   const [play, setPlay] = useState(true);
+  const [difficulty, setDifficulty] = useState('Medium');
+  const [bot, setBot] = useState(true);
+  const [comp, setComp] = useState('Crosses');
+  const [playWFriend, setFriend] = useState(false);
+  const [home, setHome] = useState(false);
 
   const startAgain = () => {
     setWinner('');
@@ -20,6 +25,7 @@ function AuthProvider(props) {
     setColor(['#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb', '#dae7eb']);
     setPlay(true);
     setDraw(false);
+    setBot(true);
   };
 
   const loadData = useCallback(async () => {
@@ -27,6 +33,7 @@ function AuthProvider(props) {
     const loginF = Cookies.get("login");
     setAuthorized(auhtorizedF);
     setLogin(loginF);
+    setHome(window.location.pathname == '/');
   }, []);
 
   useEffect(() => {
@@ -38,7 +45,9 @@ function AuthProvider(props) {
       setAuthorized, login, setLogin, winner,
       setWinner, draw, setDraw, turn, setTurn,
       flag, setFlag, cellColor, setColor, play,
-      setPlay, startAgain }}>
+      setPlay, startAgain, difficulty, setDifficulty,
+      bot, setBot, playWFriend, setFriend,
+      comp, setComp, home, setHome }}>
       {props.children}
     </AuthContext.Provider>
   );

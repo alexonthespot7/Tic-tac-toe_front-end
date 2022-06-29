@@ -12,11 +12,13 @@ import Axios from 'axios';
 function TTTMain() {
   const [again, setAgain] = useState(true);
   const {
-    authorized, login, winner, draw, play, setPlay, startAgain
+    authorized, login, winner, draw, play, setPlay,
+    startAgain, playWFriend, comp, setComp, setHome
   } = useContext(AuthContext);
 
   useEffect(() => {
     setAgain(winner !== '' || draw);
+    setHome(true);
 
     if ((winner !== '' || draw) && authorized && login) {
       Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/addResult', {
@@ -37,6 +39,10 @@ function TTTMain() {
       <Stack spacing={2} sx={{my: 10}}>
         {!play && <Results />}
         {play && <Typography align='center' variant='h5'>Click play to start game...</Typography>}
+        <Stack sx={{pl: 5}} direction='row' spacing={2}>
+          <Button color={(comp == 'Crosses') ? 'primary' : 'secondary'} onClick={() => setComp('Crosses')} variant='contained' disabled = {playWFriend || !play}>Crosses</Button>
+          <Button color={(comp == 'Noughts') ? 'primary' : 'secondary'} onClick={() => setComp('Noughts')} variant='contained' disabled = {playWFriend || !play}>Noughts</Button>
+        </Stack>
         <TicTacToe />
         <Stack direction='row' spacing={10.5}>
           <Button disabled={!again} variant='outlined' onClick={() => startAgain()}>Start again</Button>
@@ -45,6 +51,6 @@ function TTTMain() {
       </Stack>
     </div>
   );
-}
+};
 
 export default TTTMain;

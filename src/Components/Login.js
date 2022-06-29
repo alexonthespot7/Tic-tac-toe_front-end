@@ -1,7 +1,7 @@
 import '../App.css';
 
-import { useState, useContext } from 'react';
-import { Button, TextField, Stack } from '@mui/material';
+import { useState, useContext, useEffect } from 'react';
+import { Button, TextField, Stack, Typography } from '@mui/material';
 import Axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -12,13 +12,19 @@ function Registration() {
     login: '',
     password: ''
   });
-  const { authorized, setAuthorized, setLogin } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const { authorized, setAuthorized, setLogin, setHome } = useContext(AuthContext);
 
+  useEffect(() => {
+    setHome(false);
+  }, []);
+  
   const inputChanged = (event) => {
     setUser({...user, [event.target.name]: event.target.value});
   };
 
   const handleSave = () => {
+    setLoading(true);
     Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/login', {
       login: user.login
     })
@@ -26,8 +32,10 @@ function Registration() {
       const data = response.data[0];
       if (data === undefined) {
         alert('The login is wrong!');
+        setLoading(false);
       } else if (data.password !== user.password) {
         alert('The password is wrong');
+        setLoading(false);
       } else if (data.password === user.password) {
         alert('The login process went successfully');
         setAuthorized(true);
@@ -37,7 +45,8 @@ function Registration() {
       }
     })
     .catch((error) => {
-      alert("Login isn't available at the moment")
+      alert("Login isn't available at the moment");
+      setLoading(false);
       console.log(error);
     });
 
@@ -47,26 +56,29 @@ function Registration() {
     });
   };
 
-  return !authorized ? (
+  return !Cookies.get('authorized') ? (
       <div className='App'>
-        <Stack spacing={2} sx={{my: 10}}>
-          <TextField
-            name="login"
-            label="Login"
-            fullWidth
-            value={user.login}
-            onChange={inputChanged}
-          />
-          <TextField
-            name="password"
-            type="password"
-            value={user.password}
-            onChange={inputChanged}
-            label="Password"
-            fullWidth
-          />
-          <Button onClick={() => handleSave()}>Login</Button>
-        </Stack>
+        {!loading &&
+          <Stack spacing={2} sx={{my: 10}}>
+            <TextField
+              name="login"
+              label="Login"
+              fullWidth
+              value={user.login}
+              onChange={inputChanged}
+            />
+            <TextField
+              name="password"
+              type="password"
+              value={user.password}
+              onChange={inputChanged}
+              label="Password"
+              fullWidth
+            />
+            <Button onClick={() => handleSave()}>Login</Button>
+          </Stack>
+        }
+        {loading && <Typography variant='h5' align='center'>Loading...</Typography>}
       </div>
   ) : (
     <div className='App'></div>
