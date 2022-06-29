@@ -600,7 +600,7 @@ export default function TicTacToe() {
                                               } else {
                                                 seventh.push(0);
                                               };
-                                              init[g] = '';
+                                              init[h] = '';
                                               if (h == 8) {
                                                 init[g] = '';
                                                 if (g == 8) {
@@ -748,7 +748,7 @@ export default function TicTacToe() {
         if (init[a] == '') {
           init[a] = 'O';
           let second = [];
-          for(let b= 0; b<9; b++) {
+          for (let b = 0; b<9; b++) {
             if (init[b] == '') {
               init[b] = "X";
               if (checkWinner(init)) {
@@ -1101,6 +1101,7 @@ export default function TicTacToe() {
         
         if (countEmpts(flag) == 8) {
           res = doFirstN(init);
+          alert(res);
         } else if (countEmpts(flag) == 6) {
           res = doSecondN(init);
         } else if (countEmpts(flag) == 4) {
@@ -1167,6 +1168,7 @@ export default function TicTacToe() {
         
         if (countEmpts(flag) == 8) {
           res = doFirstN(init);
+          alert(res);
         } else if (countEmpts(flag) == 6) {
           res = doSecondN(init);
         } else if (countEmpts(flag) == 4) {

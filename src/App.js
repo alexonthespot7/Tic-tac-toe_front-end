@@ -63,7 +63,7 @@ function MyMenu() {
         endIcon={<KeyboardArrowDownIcon />}
       >
         {!playWFriend && difficulty}
-        {playWFriend && <Typography variant='h6'>PvP</Typography>}
+        {playWFriend && <Typography variant='h7'>PvP</Typography>}
       </Button>
       <Menu
         id="basic-menu"
