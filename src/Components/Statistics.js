@@ -11,6 +11,7 @@ import { SettingsInputHdmiOutlined } from '@mui/icons-material';
 function Statistics() {
   const [flagHere, setFlagHere] = useState(false);
   const [statsOne, setStatsOne] = useState(null);
+  const [statsTwo, setStatsTwo] = useState(null);
   const [isEmpt, setEmpt] = useState(false);
   const [reset, setReset] = useState(false);
 
@@ -23,7 +24,7 @@ function Statistics() {
     .then((response) => {
       let dataStat = response.data[0];
       if (dataStat !== undefined) {
-        const statData = [dataStat.cross_wins, dataStat.nought_wins, dataStat.draws];
+        const statData = [dataStat.cross_wins, dataStat.nought_wins, dataStat.draws, dataStat.bot_wins, dataStat.user_wins, dataStat.bot_draws];
         if (statData[0] === statData[1] && statData[1] === statData[2] && statData[1] === 0) {
           setEmpt(true);
         };
@@ -41,8 +42,22 @@ function Statistics() {
             'value': statData[2]
           }
         ]);
+        setStatsTwo([
+          {
+            'name': 'Your Wins',
+            'value': statData[4]
+          },
+          {
+            'name': "Bot's Wins",
+            'value': statData[3]
+          },
+          {
+            'name': 'Draws',
+            'value': statData[5]
+          }
+        ]);
       } else {
-        alert("Statistics page2 isn't available at the moment");
+        alert("Statistics page isn't available for you at the moment");
       }
     })
     .catch((err) => {
@@ -67,6 +82,7 @@ function Statistics() {
     .then((response) => {
       console.log(response);
       setReset(true);
+      alert('Your stat was reset successfully');
     })
     .catch((err) => {
       alert('something went wrong!');
@@ -81,32 +97,54 @@ function Statistics() {
   if (flagHere && Cookies.get('authorized')) {
     return (!isEmpt) ? (
       <div className='App'>
-        {statsOne &&
-          <Stack spacing={3} sx={{my: 8}}>
-            <Typography variant='h5'>Your statistics</Typography>
-            <BarChart
-              width={600}
-              height={400}
-              data={statsOne}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: -5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="0 0" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#8884d8" />
-            </BarChart>
-            <Grid sx={{pr: 3}} container justifyContent="flex-end">
-              <Button size='large' onClick={() => resetStat()}>Reset</Button>
-            </Grid>
+        {statsOne && statsTwo &&
+          <Stack direction='row' sx={{my: 8}} spaciing={3}>
+            <Stack spacing={3}>
+              <Typography variant='h5'>Your full statistics</Typography>
+              <BarChart
+                width={600}
+                height={400}
+                data={statsOne}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: -5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="0 0" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#8884d8" />
+              </BarChart>
+            </Stack>
+            <Stack spacing={3}>
+              <Typography variant='h5'>Your statistics against bot!</Typography>
+              <BarChart
+                width={600}
+                height={400}
+                data={statsTwo}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: -5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="0 0" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#8884d8" />
+              </BarChart>
+              <Grid sx={{pr: 3}} container justifyContent="flex-end">
+                <Button size='large' onClick={() => resetStat()}>Reset</Button>
+              </Grid>
+            </Stack>
           </Stack>
         }
-        {!statsOne &&
+        {!statsOne && !statsTwo &&
           <Stack spacing={2} sx={{my: 10}}>
             <Typography variant='h6'>Loading...</Typography>
           </Stack>

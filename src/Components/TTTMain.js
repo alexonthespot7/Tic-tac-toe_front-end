@@ -16,22 +16,53 @@ function TTTMain() {
     startAgain, playWFriend, comp, setComp, setHome
   } = useContext(AuthContext);
 
+  const postResult = () => {
+    Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/addResult', {
+      login: login,
+      resultT: winner
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
+  const postBotResult = () => {
+    let botRes;
+    if (draw) {
+      botRes = 'Draw';
+    } else if (comp === winner) {
+      botRes = 'Bot';
+      alert(botRes);
+    } else {
+      botRes = "User";
+    };
+
+    Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/addBotResult', {
+      login: login,
+      result: botRes
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
   useEffect(() => {
     setAgain(winner !== '' || draw);
     setHome(true);
 
     if ((winner !== '' || draw) && authorized && login) {
-      Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/addResult', {
-        login: login,
-        resultT: winner
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
+      postResult();
+
+      if (!playWFriend) {
+        postBotResult();
+      };
+    };
   }, [winner, draw]);
 
   return (
