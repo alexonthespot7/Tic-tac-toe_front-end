@@ -109,8 +109,8 @@ function App() {
           <Typography variant="h6" noWrap component="div">
             Tic-Tac-Toe
           </Typography>
-          {home && <MyMenu />}
           <Box sx={{flexGrow: 1}}></Box>
+          {home && <MyMenu />}
           {!home && <Button color='inherit' component={Link} variant="text" to="/">Home</Button>}
           {!authorized && <>
             <Button color='inherit' component={Link} to="/registration">Registration</Button>

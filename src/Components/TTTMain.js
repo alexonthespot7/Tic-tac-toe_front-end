@@ -35,7 +35,6 @@ function TTTMain() {
       botRes = 'Draw';
     } else if (comp === winner) {
       botRes = 'Bot';
-      alert(botRes);
     } else {
       botRes = "User";
     };
