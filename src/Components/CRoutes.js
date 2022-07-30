@@ -5,6 +5,7 @@ import Registration from "./Registration";
 import Login from "./Login";
 import Statistics from "./Statistics";
 import GuestRoute from "./GuestRoute";
+import PrivateRoute from "./PrivateRoute";
 
 function CRoutes() {
   return(
@@ -29,7 +30,9 @@ function CRoutes() {
       <Route
         path="/statistics"
         element={
-          <Statistics />
+          <PrivateRoute>
+            <Statistics />
+          </PrivateRoute>
         }
       />
     </Routes>
