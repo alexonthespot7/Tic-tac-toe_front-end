@@ -17,6 +17,7 @@ function AuthProvider(props) {
   const [comp, setComp] = useState('Crosses');
   const [playWFriend, setFriend] = useState(false);
   const [home, setHome] = useState(false);
+  const [language, setLanguage] = useState("English");
 
   const startAgain = () => {
     setWinner('');
@@ -47,7 +48,8 @@ function AuthProvider(props) {
       flag, setFlag, cellColor, setColor, play,
       setPlay, startAgain, difficulty, setDifficulty,
       bot, setBot, playWFriend, setFriend,
-      comp, setComp, home, setHome }}>
+      comp, setComp, home, setHome, language,
+      setLanguage }}>
       {props.children}
     </AuthContext.Provider>
   );

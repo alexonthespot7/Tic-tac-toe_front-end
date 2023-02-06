@@ -2,7 +2,6 @@ import '../App.css';
 
 import { useState, useContext, useEffect } from 'react';
 import { Button, TextField, Stack, Typography } from '@mui/material';
-import Axios from 'axios';
 import Cookies from 'js-cookie';
 
 import AuthContext from '../contexts/AuthContext';
@@ -18,11 +17,16 @@ function Registration() {
   const [passHelperText, setPassHelper] = useState('');
   const [space, setSpace] = useState(2);
   const [loading, setLoading] = useState(false);
+  const [pwdCheck, setPwdCheck] = useState('');
 
   const { setAuthorized, setLogin, setHome } = useContext(AuthContext);
 
   const inputChanged = (event) => {
-    setUser({...user, [event.target.name]: event.target.value});
+    if (event.target.name === 'passwordCheck') {
+      setPwdCheck(event.target.value);
+    } else {
+      setUser({ ...user, [event.target.name]: event.target.value });
+    }
     if (event.target.name === 'login') {
       setLogError(false);
       setSpace(2);
@@ -32,46 +36,58 @@ function Registration() {
       setSpace(2);
       setPassHelper('');
     }
-  };
+  }
 
   useEffect(() => {
     setHome(false);
   }, []);
 
-  const makeQuery = () => {
-    Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/register', {
-      login: user.login,
-      password: user.password      
+  const signup = () => {
+    fetch(process.env.REACT_APP_API_URL + 'signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: user.login, password: user.password })
     })
-    .then((response) => {
-      if (response.data === "") {
-        alert("Everything went succesfully");
-        setAuthorized(true);
-        setLogin(user.login)
-        Cookies.set('authorized', true);
-        Cookies.set('login', user.login);
-        setUser({
-          login: '',
-          password: ''
-        });
-      } else {
-        setLogError(true);
-        setSpace(1);
-        setLogHelper("The login is already in use");
-        setUser({...user, password: ''});
+      .then(response => {
+        if (response.ok) {
+          const jwtToken = response.headers.get('Authorization');
+          if (jwtToken !== null) {
+            const role = response.headers.get('Allow');
+            const localId = response.headers.get('Host');
+            setAuthorized(true);
+            setLogin(user.login);
+            Cookies.set('jwt', jwtToken);
+            Cookies.set('role', role);
+            Cookies.set('authorizedId', localId);
+            Cookies.set('authorized', true);
+            Cookies.set('login', user.login);
+            setLoading(false);
+            setUser({
+              username: '',
+              password: ''
+            });
+          } else {
+            setLoading(false);
+            setLogError(true);
+            setLogHelper('Something went wrong');
+            setSpace(1);
+            setPassError(true);
+            setPassHelper('Something went wrong');
+          }
+        } else {
+          setLoading(false);
+          setLogError(true);
+          setLogHelper('Login is already in use');
+          setSpace(1);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error: ' + err);
         setLoading(false);
-      };
-    })
-    .catch((error) => {
-      alert("Registration isn't available at the moment")
-      console.log(error);
-      setLoading(false);
-      setUser({
-        login: '',
-        password: ''
       });
-    });
-  };
+  }
+
 
   const handleSave = () => {
     if (user.login === '' && user.password.length >= 4) {
@@ -88,37 +104,51 @@ function Registration() {
       setLogHelper("Login field cannot be empty");
       setPassError(true);
       setPassHelper('Password must contain at least 4 symbols');
+    } else if (pwdCheck !== user.password) {
+      setPassError(true);
+      setSpace(1);
+      setPassHelper('Password doesn\'t match');
     } else {
       setLoading(true);
-      makeQuery();
-    };
-  };
+      signup();
+    }
+  }
 
   return !Cookies.get('authorized') ? (
     <div className='App'>
-        {!loading && <Stack spacing={space} sx={{my: 10}}>
-          <TextField
-            error={logError}
-            helperText={logHelperText}
-            name="login"
-            label="Login"
-            fullWidth
-            value={user.login}
-            onChange={inputChanged}
-          />
-          <TextField
-            error={passError}
-            helperText={passHelperText}
-            name="password"
-            type="password"
-            value={user.password}
-            onChange={inputChanged}
-            label="Password"
-            fullWidth
-          />
-          <Button onClick={() => handleSave()}>Register</Button>
-        </Stack>}
-        {loading && <Typography variant='h5' align='center'>Loading...</Typography>}
+      {!loading && <Stack spacing={space} sx={{ my: 10 }}>
+        <TextField
+          error={logError}
+          helperText={logHelperText}
+          name="login"
+          label="Login"
+          fullWidth
+          value={user.login}
+          onChange={inputChanged}
+        />
+        <TextField
+          error={passError}
+          helperText={passHelperText}
+          name="password"
+          type="password"
+          value={user.password}
+          onChange={inputChanged}
+          label="Password"
+          fullWidth
+        />
+        <TextField
+          error={passError}
+          helperText={passHelperText}
+          name="passwordCheck"
+          type="password"
+          value={pwdCheck}
+          onChange={inputChanged}
+          label="Password check"
+          fullWidth
+        />
+        <Button onClick={() => handleSave()}>Register</Button>
+      </Stack>}
+      {loading && <Typography variant='h5' align='center'>Loading...</Typography>}
     </div>
   ) : (
     <div className='App'></div>

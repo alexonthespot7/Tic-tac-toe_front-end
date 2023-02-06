@@ -7,7 +7,8 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import TicTacToe from './TicTacToe';
 import Results from './Results';
 import AuthContext from '../contexts/AuthContext';
-import Axios from 'axios';
+import Cookies from 'js-cookie';
+import useMediaQuery from '../Hooks/useMediaQuery';
 
 function TTTMain() {
   const [again, setAgain] = useState(true);
@@ -17,38 +18,55 @@ function TTTMain() {
   } = useContext(AuthContext);
 
   const postResult = () => {
-    Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/addResult', {
-      login: login,
-      resultT: winner
+    const token = Cookies.get('jwt');
+
+    fetch(process.env.REACT_APP_API_URL + 'api/addResult', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: JSON.stringify(winner)
     })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  };
+      .then(response => {
+        if (response.ok) {
+
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error: ' + err);
+      });
+  }
 
   const postBotResult = () => {
     let botRes;
-    if (draw) {
-      botRes = 'Draw';
-    } else if (comp === winner) {
+    if (comp === winner) {
       botRes = 'Bot';
+    } else if (draw) {
+      botRes = 'Draw';
     } else {
       botRes = "User";
     };
 
-    Axios.post('https://tic-tac-toe-bckend.herokuapp.com/api/addBotResult', {
-      login: login,
-      result: botRes
+    const token = Cookies.get('jwt');
+
+    fetch(process.env.REACT_APP_API_URL + 'api/addBotResult', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: JSON.stringify(botRes)
     })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then(response => {
+        if (response.ok) {
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error: ' + err);
+      });
   };
 
   useEffect(() => {
@@ -64,17 +82,19 @@ function TTTMain() {
     };
   }, [winner, draw]);
 
+  const matchesXS = useMediaQuery("(min-width: 350px)");
+
   return (
     <div className='App'>
-      <Stack spacing={2} sx={{my: 10}}>
+      <Stack spacing={2} sx={{ my: 10 }}>
         {!play && <Results />}
-        {play && <Typography align='center' variant='h5'>Click play to start game...</Typography>}
-        <Stack sx={{pl: 5}} direction='row' spacing={2}>
-          <Button color={(comp == 'Crosses') ? 'primary' : 'secondary'} onClick={() => setComp('Crosses')} variant='contained' disabled = {playWFriend || !play}>Crosses</Button>
-          <Button color={(comp == 'Noughts') ? 'primary' : 'secondary'} onClick={() => setComp('Noughts')} variant='contained' disabled = {playWFriend || !play}>Noughts</Button>
+        {play && <Typography align='center' variant={matchesXS ? 'h5' : 'h6'}>Click play to start game...</Typography>}
+        <Stack sx={{ pl: 0, justifyContent: 'center' }} direction='row' spacing={2}>
+          <Button color={(comp == 'Crosses') ? 'primary' : 'secondary'} onClick={() => setComp('Crosses')} variant='contained' disabled={playWFriend || !play}>Crosses</Button>
+          <Button color={(comp == 'Noughts') ? 'primary' : 'secondary'} onClick={() => setComp('Noughts')} variant='contained' disabled={playWFriend || !play}>Noughts</Button>
         </Stack>
         <TicTacToe />
-        <Stack direction='row' spacing={10.5}>
+        <Stack direction='row' spacing={matchesXS ? 10.5 : 4}>
           <Button disabled={!again} variant='outlined' onClick={() => startAgain()}>Start again</Button>
           <Button disabled={!play} variant='outlined' onClick={() => setPlay(false)} endIcon={<PlayArrowIcon />}>Play</Button>
         </Stack>
