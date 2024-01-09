@@ -33,7 +33,6 @@
 ## Technologies Used
 - React.js
 - css
-- firebase
 
 ## Dependencies
 - [@mui/icons-material](https://www.npmjs.com/package/@mui/icons-material) (^5.8.4): Material-UI Icons library for customizable icons following Material Design guidelines.
