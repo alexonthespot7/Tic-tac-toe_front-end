@@ -2,9 +2,9 @@
 
 > This React.js-based application functions as the user-facing interface for the Tic-tac-toe project.<br>
 > The app allows two game modes: PvP and single player with three difficulty levels available.<br>
+>
 > The back-end side can be found [here](https://github.com/alexonthespot7/tictactoe-backend)<br>
-> <br>
-> The [deployed app](https://tic-tac-toe2024.netlify.app/)
+
 
 ## Table of Contents
 * [Usage Guide](#usage-guide)
